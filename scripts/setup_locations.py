@@ -15,30 +15,35 @@ regions = {
         {'left_x': 290374,
          'right_x': 1244051,
          'upper_y': -725683,
-         'lower_y': -2234665},
+         'lower_y': -2234665
+        },
     'barents_kara_seas':
         {'left_x': 700817,
          'right_x': 2398925,
          'upper_y': 1173623,
-         'lower_y': -725683},
+         'lower_y': -725683
+        },
     'laptev_sea': 
         {'left_x': -152260, 
          'right_x': 700817,
          'upper_y': 2119251,
-         'lower_y': 895970},
+         'lower_y': 895970
+        },
     'east_siberian_sea':
         {'left_x': -1472117,
          'right_x': -152260,
          'upper_y': 2038772,
-         'lower_y': 753120},
+         'lower_y': 753120
+        },
     'bering_chukchi_seas':
         {'left_x': -1472117 - 1500e3,
          'right_x': -1472117,
          'upper_y': 753120 + 1500e3,
-         'lower_y': 753120},
-    'beaufort_sea':
-        {'left_x':-2339278,
-         'right_x': -2339278 + 1500e3,
+         'lower_y': 753120
+        },
+    'beaufort_sea': 
+        {'left_x':-2383879,
+         'right_x': -883879,
          'upper_y': 753120,
          'lower_y': -303168
         },
