@@ -1,4 +1,7 @@
 """Functions for evaluating segmentation results"""
+import skimage
+import pandas as pd
+import numpy as np
 
 
 def select_relevant_set(label_i, gt_image, seg_image, gt_image_props, seg_image_props, thresh=0.5):
@@ -16,13 +19,13 @@ def select_relevant_set(label_i, gt_image, seg_image, gt_image_props, seg_image_
     possible = [x for x in np.unique(seg_image[gt_image == label_i]) if x != 0]
     
     if len(possible) == 0:
-        return
+        return []
 
     reference_set = []
     for j in possible:    
         # A: centroid(gi) in sj
         rg, cg = gt_image_props[label_i].centroid
-        s_label = seg_image[int(np.round(r)), int(np.round(c))]
+        s_label = seg_image[int(np.round(rg)), int(np.round(cg))]
         
         in_A = s_label == j
         
@@ -41,8 +44,6 @@ def select_relevant_set(label_i, gt_image, seg_image, gt_image_props, seg_image_
         if np.any([in_A, in_B, in_C, in_D]):
             reference_set.append(j)
 
-        # test
-    print('Label', label_i, 'Size', len(reference_set), 'A:', in_A, 'B: ', in_B, 'C: ', in_C, 'D: ', in_D)
     return reference_set
 
 # Metrics for objectwise comparison
@@ -50,7 +51,7 @@ def apply_segmentation_metrics_ij(label_i, gt_image, label_j, seg_image,
                                gt_image_props, seg_image_props):
     """Produce a pandas Series object with the names of each measure as the index. Calculates measures for
     indivual pairs of objects. Inputs are the (integer) labels, the labeled images, and the dictionaries 
-    with object properties returned by regionprops.
+    with object properties returned by regionprops. If label_j is nan, then it returns 0 for each metric.
     
     Metrics calculated:
 
@@ -68,8 +69,17 @@ def apply_segmentation_metrics_ij(label_i, gt_image, label_j, seg_image,
     metric_results = {'label_i': label_i,
                       'label_j': label_j}
 
+    
     area_g = gt_image_props[label_i].area
-    area_s = seg_image_props[label_j].area
+    rg, cg = gt_image_props[label_i].centroid
+    
+    if np.isnan(label_j):
+        area_s = np.nan
+        rs, cs = np.nan, np.nan
+        
+    else:
+        area_s = seg_image_props[label_j].area
+        rs, cs = seg_image_props[label_j].centroid
     area_gs = np.sum((gt_image == label_i) & (seg_image == label_j))
 
 
@@ -80,9 +90,7 @@ def apply_segmentation_metrics_ij(label_i, gt_image, label_j, seg_image,
     pr = area_gs/area_s
     re = area_gs/area_g
     f1_score = 2*(pr*re)/(pr+re)
-
-    rg, cg = gt_image_props[label_i].centroid
-    rs, cs = seg_image_props[label_j].centroid
+    
 
     # area
     metric_results['relative_error_area'] = (area_g - area_s)/area_g
@@ -96,14 +104,13 @@ def apply_segmentation_metrics_ij(label_i, gt_image, label_j, seg_image,
     metric_results['hausdorff_distance'] = skimage.metrics.hausdorff_distance(gt_image == label_i, seg_image == label_j, method='standard')
     metric_results['modified_hausdorff_distance'] = skimage.metrics.hausdorff_distance(gt_image == label_i, seg_image == label_j, method='modified')
 
-    # boundary
+    # boundary -- identical to the relative area error?? double check this formula
     metric_results['shape_dissimilarity'] = (np.sum((gt_image == label_i) & (seg_image != label_j)) + 
                                              np.sum((gt_image != label_i) & (seg_image == label_j))) / area_g
 
     # TBD: write function to calculate directed boundary score
     # metric_results['directed_boundary_fscore'] = dbf(gt_image, seg_image, r=5)
     
-
     return pd.Series(metric_results)
 
 # Here's what would get called for each image
@@ -113,23 +120,27 @@ def compute_metrics(gt_image, seg_image, weighted=True):
     the full image. If "weighted=True", then weight by the ground truth object size before returning.
     """
 
-    # TBD
-    # Can add image-wide metrics here
 
+    gt_img_props = {floe.label: floe for floe in skimage.measure.regionprops(gt_image)}
+    seg_img_props = {floe.label: floe for floe in skimage.measure.regionprops(seg_image)}
     
     results = []
-    for label_i in man_img_props:
-        ref_set = select_relevant_set(label_i=label_i, gt_image=man_img, seg_image=ift_img,
-                        gt_image_props=man_img_props, seg_image_props=ift_img_props, thresh=0.5)
-    
+    for label_i in gt_img_props:
+        ref_set = select_relevant_set(label_i=label_i, gt_image=gt_image, seg_image=seg_image,
+                        gt_image_props=gt_img_props, seg_image_props=seg_img_props, thresh=0.5)
         if len(ref_set) > 0:
             for label_j in ref_set:
                 results.append(apply_segmentation_metrics_ij(label_i=label_i,
-                                                             gt_image=man_img,
+                                                             gt_image=gt_image,
                                                              label_j=label_j,
-                                                             seg_image=ift_img,
-                                                             gt_image_props=man_img_props,
-                                                             seg_image_props=ift_img_props))
+                                                             seg_image=seg_image,
+                                                             gt_image_props=gt_img_props,
+                                                             seg_image_props=seg_img_props))
+
+    # image-wide metrics - add another function apply_segmentation_metrics() (i.e. no "ij" at end)
+    # and get image-wide Pr, Re, F, MCC.
+
+    # will fail if results is empty -- add method to make row of nans with right labels
     results = pd.DataFrame(results)
     
     # First average over the relevant sets
@@ -137,18 +148,16 @@ def compute_metrics(gt_image, seg_image, weighted=True):
     
     # The unweighted average
     unweighted_mean = results_i.mean(axis=0)
+    unweighted_mean['n'] = len(results_i)
     
     # Weighted by area
-    w = results_i.area_i / results_i.area_i.sum()
-    weighted_mean = pd.Series(np.average(results_i, weights=w, axis=0), index=unweighted_mean.index)
-    
-    # In both cases, add the number of ground truth elements, as well
-    weighted_mean['n'] = len(results_i)
-    unweighted_mean['n'] = len(results_i)
-
     if weighted:
+        w = results_i.area_i / results_i.area_i.sum()
+        weighted_mean = pd.Series(np.average(results_i, weights=w, axis=0), index=unweighted_mean.index)
+        weighted_mean['n'] = len(results_i)
+    
         return weighted_mean
-        
+
     else:
         return unweighted_mean
 
