@@ -46,6 +46,59 @@ def select_relevant_set(label_i, gt_image, seg_image, gt_image_props, seg_image_
 
     return reference_set
 
+def bdry_dice_score(label_i, label_j, gt_image, seg_image, radius=1):
+    """Computes the directed boundary F-score, which is an adaptation of the 
+    directed boundary Dice score used in Yeghiazaryan and Voiculescu 2018.
+    TBD: Add variable, directed=True, so if it is false, compute the symmetric version.
+    """
+    imsize = gt_image.shape
+    obj_bdry = skimage.segmentation.find_boundaries(gt_image, mode='inner')
+    index_bdry = np.argwhere((gt_image == label_i) & obj_bdry)
+
+    k = skimage.morphology.disk(radius)
+    kdim = k.shape
+    
+    gi = gt_image == label_i
+    sj = seg_image == label_j
+    y = np.zeros(len(index_bdry))
+    for idx, (row,col) in enumerate(index_bdry):
+        left = max(col - radius, 0)
+        right = min(col + radius + 1, imsize[0])
+        bottom = max(row - radius, 0)
+        top = min(row + radius + 1, imsize[1])
+        
+        gi_k = gi[bottom:top, left:right]
+        
+        # this selects the segmented spot
+        sj_k = sj[bottom:top, left:right]
+        
+        # To adjust the size of the kernel
+        # Check size of overlap in each direction
+        
+        k_left = 0
+        k_right = kdim[0]
+        k_bottom = 0
+        k_top = kdim[1]
+        
+        # We have to adjust the size if the kernel overlaps the boundary
+        if left - radius < 0:
+            k_left = np.abs(left - radius)
+        elif right + radius > imsize[0]:
+            k_right = np.abs(right + radius - imsize[0])
+        if bottom - radius < 0:
+            k_bottom = np.abs(bottom - radius)
+        elif top + radius > imsize[1]:
+            k_top = np.abs(top + radius - imsize[1])
+        
+        k[k_bottom:k_top, k_left:k_right]
+    
+        denom = 2 * np.sum(sj_k & gi_k & k)
+        num = np.sum(sj_k & k) + np.sum(gi_k & k)
+        
+        y[idx] = denom/num
+    return np.mean(y)
+
+
 # Metrics for objectwise comparison
 def apply_segmentation_metrics_ij(label_i, gt_image, label_j, seg_image,
                                gt_image_props, seg_image_props):
@@ -63,7 +116,7 @@ def apply_segmentation_metrics_ij(label_i, gt_image, label_j, seg_image,
     hausdorff_distance
     modified_hausdorff_distance
     shape_dissimilarity
-    directed_boundary_fscore
+    directed_boundary_dice_score
     """
 
     metric_results = {'label_i': label_i,
@@ -101,20 +154,29 @@ def apply_segmentation_metrics_ij(label_i, gt_image, label_j, seg_image,
 
     # location
     metric_results['euclidean_distance'] = np.sqrt((rg - rs)**2 + (cg - cs)**2)
-    metric_results['hausdorff_distance'] = skimage.metrics.hausdorff_distance(gt_image == label_i, seg_image == label_j, method='standard')
-    metric_results['modified_hausdorff_distance'] = skimage.metrics.hausdorff_distance(gt_image == label_i, seg_image == label_j, method='modified')
+    metric_results['hausdorff_distance'] = skimage.metrics.hausdorff_distance(gt_image == label_i,
+                                                                              seg_image == label_j,
+                                                                              method='standard')
+    
+    metric_results['modified_hausdorff_distance'] = skimage.metrics.hausdorff_distance(gt_image == label_i,
+                                                                                       seg_image == label_j,
+                                                                                       method='modified')
 
     # boundary -- identical to the relative area error?? double check this formula
     metric_results['shape_dissimilarity'] = (np.sum((gt_image == label_i) & (seg_image != label_j)) + 
                                              np.sum((gt_image != label_i) & (seg_image == label_j))) / area_g
 
-    # TBD: write function to calculate directed boundary score
-    # metric_results['directed_boundary_fscore'] = dbf(gt_image, seg_image, r=5)
+
+    metric_results['directed_boundary_dice_score'] = bdry_dice_score(
+        label_i, label_j, gt_image, seg_image, radius=1, directed=True)
+
+    # add symmetric score
+    # add f-score
     
     return pd.Series(metric_results)
 
 # Here's what would get called for each image
-def compute_metrics(gt_image, seg_image, weighted=True):
+def compute_metrics(gt_image, seg_image, return_type='weighted'):
     """Extract features from the ground truth and segmented image, then compute a series of metrics
     to measure the quality of the segmentation. Returns a pandas Series with measures calculated for 
     the full image. If "weighted=True", then weight by the ground truth object size before returning.
@@ -142,7 +204,10 @@ def compute_metrics(gt_image, seg_image, weighted=True):
 
     # will fail if results is empty -- add method to make row of nans with right labels
     results = pd.DataFrame(results)
-    
+
+    if return_type == 'all':
+        return results
+        
     # First average over the relevant sets
     results_i = results.groupby('label_j').mean()
     
@@ -151,7 +216,7 @@ def compute_metrics(gt_image, seg_image, weighted=True):
     unweighted_mean['n'] = len(results_i)
     
     # Weighted by area
-    if weighted:
+    if return_type == 'weighted':
         w = results_i.area_i / results_i.area_i.sum()
         weighted_mean = pd.Series(np.average(results_i, weights=w, axis=0), index=unweighted_mean.index)
         weighted_mean['n'] = len(results_i)
