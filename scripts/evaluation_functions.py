@@ -46,7 +46,7 @@ def select_relevant_set(label_i, gt_image, seg_image, gt_image_props, seg_image_
 
     return reference_set
 
-def bdry_dice_score(label_i, label_j, gt_image, seg_image, radius=1):
+def bdry_dice_score(label_i, label_j, gt_image, seg_image, radius=1, directed=True):
     """Computes the directed boundary F-score, which is an adaptation of the 
     directed boundary Dice score used in Yeghiazaryan and Voiculescu 2018.
     TBD: Add variable, directed=True, so if it is false, compute the symmetric version.
