@@ -19,8 +19,8 @@ case_number,region,start_date,center_lon,center_lat,center_x,center_y,month,sea_
 9,baffin_bay,2012-04-22,-72.25532837,77.20090338,-637500,-1237500,4,1,0.6869999766,21,aqua,yes,yes,yes,0.4,thin,yes,ethan,daniel,emma,daniel,yes,
 10,baffin_bay,2021-06-02,-72.18111109,75.67362506,-712500,-1387500,6,1,0.7580000162,36,terra,yes,no,yes,0.9,thin,yes,daniel,emma,daniel,,yes,
 10,baffin_bay,2021-06-02,-72.18111109,75.67362506,-712500,-1387500,6,1,0.7580000162,36,aqua,yes,no,yes,1,thin,no,ethan,daniel,daniel,,yes,
-11,baffin_bay,2011-07-02,-70.73473569,72.33032771,-837500,-1737500,7,0.8,0.3880000114,-1,aqua,yes,no,yes,0,none,no,daniel,,,,,
-11,baffin_bay,2011-07-02,-70.73473569,72.33032771,-837500,-1737500,7,0.8,0.3880000114,-1,terra,yes,no,yes,0.1,thin,yes,daniel,,,,,
+11,baffin_bay,2011-07-02,-70.73473569,72.33032771,-837500,-1737500,7,0.8,0.3880000114,-1,aqua,yes,no,yes,0,none,no,daniel,,daniel,,yes,
+11,baffin_bay,2011-07-02,-70.73473569,72.33032771,-837500,-1737500,7,0.8,0.3880000114,-1,terra,yes,no,yes,0.1,thin,yes,daniel,,daniel,,yes,
 12,baffin_bay,2009-04-26,-69.55045239,79.75068046,-462500,-1012500,4,1,0.8560000062,16,terra,yes,yes,yes,0.2,scattered,no,daniel,emma,ellen,,yes,daniel: added landfast ice labels
 12,baffin_bay,2009-04-26,-69.55045239,79.75068046,-462500,-1012500,4,1,0.8560000062,16,aqua,yes,yes,yes,0.1,scattered,yes,ethan,daniel,ellen,,yes,
 13,baffin_bay,2012-05-27,-69.09201953,74.54322463,-687500,-1537500,5,1,0.7070000172,-1,aqua,yes,no,yes,0.8,thin,no,daniel,,,,,
@@ -41,8 +41,8 @@ case_number,region,start_date,center_lon,center_lat,center_x,center_y,month,sea_
 20,baffin_bay,2007-06-03,-57.48808577,72.52144709,-412500,-1862500,6,0.6,0.3899999857,-1,terra,yes,no,yes,0.3,thin,no,daniel,,,,,
 21,baffin_bay,2014-03-29,-55.92280472,70.09851434,-412500,-2137500,3,1,0.9120000005,23,terra,yes,no,yes,0.8,thin,no,daniel,emma,emma,daniel,yes,
 21,baffin_bay,2014-03-29,-55.92280472,70.09851434,-412500,-2137500,3,1,0.9120000005,23,aqua,yes,no,yes,0.8,opaque,no,ethan,daniel,emma,daniel,yes,
-22,barents_kara_seas,2006-09-09,18.08344538,81.60277455,812500,-412500,9,0.88,0.7149999738,-1,aqua,yes,no,yes,0.9,scattered,yes,daniel,,,,,
-22,barents_kara_seas,2006-09-09,18.08344538,81.60277455,812500,-412500,9,0.88,0.7149999738,-1,terra,yes,no,yes,1,scattered,no,daniel,,,,,
+22,barents_kara_seas,2006-09-09,18.08344538,81.60277455,812500,-412500,9,0.88,0.7149999738,-1,aqua,yes,no,yes,0.9,scattered,yes,daniel,,daniel,,yes,
+22,barents_kara_seas,2006-09-09,18.08344538,81.60277455,812500,-412500,9,0.88,0.7149999738,-1,terra,yes,no,yes,1,scattered,no,daniel,,daniel,,yes,
 23,barents_kara_seas,2019-03-04,26.86981309,76.34205355,1412500,-462500,3,0.88,0.574000001,-1,aqua,yes,no,yes,1,scattered,no,daniel,,,,,
 23,barents_kara_seas,2019-03-04,26.86981309,76.34205355,1412500,-462500,3,0.88,0.574000001,-1,terra,yes,no,yes,1,scattered,no,daniel,,,,,
 24,barents_kara_seas,2015-04-26,31.1224702,79.9218734,1062500,-262500,4,1,0.9129999876,83,aqua,yes,no,no,0.9,opaque,no,daniel,ethan,,,,
@@ -85,8 +85,8 @@ case_number,region,start_date,center_lon,center_lat,center_x,center_y,month,sea_
 42,barents_kara_seas,2021-09-10,83.99099404,80.66677752,787500,637500,9,0.6,0.5230000019,-1,terra,no,no,no,1,opaque,yes,daniel,,,,,
 43,beaufort_sea,2019-08-13,-154.6986214,80.09608481,-1012500,362500,8,1,0.8500000238,-1,aqua,yes,no,yes,0.4,thin,yes,daniel,,daniel,,yes,
 43,beaufort_sea,2019-08-13,-154.6986214,80.09608481,-1012500,362500,8,1,0.8500000238,-1,terra,yes,no,yes,0.9,thin,yes,daniel,,daniel,,yes,
-44,beaufort_sea,2020-08-08,-150.1799274,74.6649074,-1612500,437500,8,1,0.6439999938,141,aqua,yes,no,yes,1,opaque,no,daniel,minki,,,,Ice floe-visible
-44,beaufort_sea,2020-08-08,-150.1799274,74.6649074,-1612500,437500,8,1,0.6439999938,141,terra,yes,no,yes,0.7,opaque,no,daniel,minki,,,,Ice floe-visible; changed cloud fraction to 0.7
+44,beaufort_sea,2020-08-08,-150.1799274,74.6649074,-1612500,437500,8,1,0.6439999938,141,aqua,yes,no,yes,1,opaque,no,daniel,minki,daniel,,yes,Ice floe-visible
+44,beaufort_sea,2020-08-08,-150.1799274,74.6649074,-1612500,437500,8,1,0.6439999938,141,terra,yes,no,yes,0.7,opaque,no,daniel,minki,daniel,,yes,Ice floe-visible; changed cloud fraction to 0.7
 45,beaufort_sea,2017-09-25,-148.0791238,78.31111945,-1237500,287500,9,0.6,0.5630000234,134,aqua,yes,no,no,0.7,scattered,no,daniel,minki,,,,
 45,beaufort_sea,2017-09-25,-148.0791238,78.31111945,-1237500,287500,9,0.6,0.5630000234,134,terra,no,no,no,0.9,thick,yes,daniel,minki,,,,
 46,beaufort_sea,2020-07-08,-142.5729486,70.05737285,-2162500,287500,7,1,0.476000011,140,aqua,yes,no,yes,0.3,scattered,no,daniel,minki,emma,daniel,yes,
@@ -127,8 +127,8 @@ case_number,region,start_date,center_lon,center_lat,center_x,center_y,month,sea_
 63,beaufort_sea,2007-07-11,-128.1572266,75.54667812,-1562500,-187500,7,1,0.8149999976,115,terra,yes,no,yes,0.1,scattered,no,daniel,minki,,,,
 64,bering_chukchi_seas,2007-07-27,-179.6180338,65.87000669,-1887500,1862500,7,0.571,0.8920000196,443,aqua,yes,no,no,1,opaque,no,daniel,minki,,,,floes are too ambiguous to trace (if they even are floes)
 64,bering_chukchi_seas,2007-07-27,-179.6180338,65.87000669,-1887500,1862500,7,0.571,0.8920000196,443,terra,yes,no,no,1,opaque,yes,daniel,minki,,,,floes are too ambiguous to trace (if they even are floes)
-65,bering_chukchi_seas,2008-05-07,-178.3540225,62.13404813,-2237500,2112500,5,1,0.7910000086,450,aqua,yes,no,yes,1,opaque,no,daniel,minki,,,,
-65,bering_chukchi_seas,2008-05-07,-178.3540225,62.13404813,-2237500,2112500,5,1,0.7910000086,450,terra,yes,no,yes,1,opaque,no,daniel,minki,,,,
+65,bering_chukchi_seas,2008-05-07,-178.3540225,62.13404813,-2237500,2112500,5,1,0.7910000086,450,aqua,yes,no,yes,1,opaque,no,daniel,minki,daniel,,yes,
+65,bering_chukchi_seas,2008-05-07,-178.3540225,62.13404813,-2237500,2112500,5,1,0.7910000086,450,terra,yes,no,yes,1,opaque,no,daniel,minki,daniel,,yes,
 66,bering_chukchi_seas,2011-03-19,-177.3523703,62.27074228,-2262500,2062500,3,0.76,0.5770000219,168,aqua,no,no,no,1,opaque,no,ethan,daniel,,,,
 66,bering_chukchi_seas,2011-03-19,-177.3523703,62.27074228,-2262500,2062500,3,0.76,0.5770000219,168,terra,no,no,no,0.9,opaque,no,ethan,daniel,,,,Changed cloud fraction from 0.8 to 0.9
 67,bering_chukchi_seas,2008-06-23,-175.1634166,68.94056571,-1762500,1487500,6,0.72,0.5109999776,-1,aqua,yes,no,yes,0.9,thin,no,daniel,,,,,
@@ -169,10 +169,10 @@ case_number,region,start_date,center_lon,center_lat,center_x,center_y,month,sea_
 84,bering_chukchi_seas,2007-07-21,-162.0874906,73.13925623,-1637500,837500,7,0.52,0.3779999912,-1,terra,yes,no,yes,0.9,thin,no,daniel,,,,,
 85,east_siberian_sea,2009-09-03,-177.614056,78.27969014,-937500,862500,9,1,0.4930000007,206,aqua,no,no,no,0.9,opaque,no,minki,emma,,,,
 85,east_siberian_sea,2009-09-03,-177.614056,78.27969014,-937500,862500,9,1,0.4930000007,206,terra,no,no,no,0.9,opaque,no,minki,emma,,,,
-86,east_siberian_sea,2006-09-27,-173.5956473,74.00763823,-1362500,1087500,9,0.96,0.5230000019,200,aqua,no,no,no,0.9,opaque,no,minki,emma,,,,obscured
-86,east_siberian_sea,2006-09-27,-173.5956473,74.00763823,-1362500,1087500,9,0.96,0.5230000019,200,terra,yes,no,yes,0.6,scattered,no,minki,emma,,,,one or two floes visible
-87,east_siberian_sea,2018-08-28,-173.4180553,77.23781494,-1087500,862500,8,1,0.4269999862,234,aqua,yes,no,yes,0.7,thin,no,minki,emma,,,,
-87,east_siberian_sea,2018-08-28,-173.4180553,77.23781494,-1087500,862500,8,1,0.4269999862,234,terra,no,no,no,0.9,opaque,no,minki,emma,,,,
+86,east_siberian_sea,2006-09-27,-173.5956473,74.00763823,-1362500,1087500,9,0.96,0.5230000019,200,aqua,no,no,no,0.9,opaque,no,minki,emma,daniel,,yes,obscured
+86,east_siberian_sea,2006-09-27,-173.5956473,74.00763823,-1362500,1087500,9,0.96,0.5230000019,200,terra,yes,no,yes,0.6,scattered,no,minki,emma,daniel,,yes,one or two floes visible
+87,east_siberian_sea,2018-08-28,-173.4180553,77.23781494,-1087500,862500,8,1,0.4269999862,234,aqua,yes,no,yes,0.7,thin,no,minki,emma,daniel,,yes,
+87,east_siberian_sea,2018-08-28,-173.4180553,77.23781494,-1087500,862500,8,1,0.4269999862,234,terra,no,no,no,0.9,opaque,no,minki,emma,daniel,,yes,
 88,east_siberian_sea,2014-08-08,-172.2596588,73.15462424,-1462500,1112500,8,0.8,0.5519999862,223,aqua,yes,no,yes,0.9,thin,no,minki,emma,,,,changed cloud fraction from 0.1 to 0.9 es
 88,east_siberian_sea,2014-08-08,-172.2596588,73.15462424,-1462500,1112500,8,0.8,0.5519999862,223,terra,yes,no,yes,0.1,thin,yes,minki,emma,,,,changed artifacts no to yes es
 89,east_siberian_sea,2014-05-11,146.8643905,76.03546416,-312500,1487500,5,1,0.77700001,222,aqua,yes,yes,no,0.7,opaque,no,minki,emma,,,,
@@ -211,8 +211,8 @@ case_number,region,start_date,center_lon,center_lat,center_x,center_y,month,sea_
 105,east_siberian_sea,2018-08-09,176.143199,75.51782426,-1037500,1187500,8,1,0.7289999723,232,terra,yes,no,yes,0.4,thin,yes,minki,emma,,,,
 106,greenland_sea,2017-09-13,-24.24920441,70.32123899,762500,-2012500,9,0.667,0.5249999762,-1,aqua,no,no,no,0.6,scattered,no,daniel,,,,,
 106,greenland_sea,2017-09-13,-24.24920441,70.32123899,762500,-2012500,9,0.667,0.5249999762,-1,terra,no,no,no,0.8,scattered,yes,daniel,,,,,
-107,greenland_sea,2021-05-06,-22.30620505,69.57314507,862500,-2062500,5,1,0.7720000148,-1,aqua,yes,yes,yes,0.9,scattered,no,daniel,,,,,
-107,greenland_sea,2021-05-06,-22.30620505,69.57314507,862500,-2062500,5,1,0.7720000148,-1,terra,yes,yes,yes,0.9,scattered,no,daniel,,,,,
+107,greenland_sea,2021-05-06,-22.30620505,69.57314507,862500,-2062500,5,1,0.7720000148,-1,aqua,yes,yes,yes,0.9,scattered,no,daniel,,daniel,,yes,
+107,greenland_sea,2021-05-06,-22.30620505,69.57314507,862500,-2062500,5,1,0.7720000148,-1,terra,yes,yes,yes,0.9,scattered,no,daniel,,daniel,,yes,
 108,greenland_sea,2018-06-10,-20.92450174,72.31571697,787500,-1762500,6,1,0.6719999909,283,aqua,yes,yes,yes,0.6,thin,no,minki,ellen,daniel,,yes,
 108,greenland_sea,2018-06-10,-20.92450174,72.31571697,787500,-1762500,6,1,0.6719999909,283,terra,yes,yes,yes,0.6,thin,no,minki,ellen,daniel,,yes,
 109,greenland_sea,2022-07-28,-16.83747263,77.09488198,662500,-1237500,7,1,0.7590000033,291,aqua,yes,yes,yes,0.3,scattered,no,minki,ellen,daniel,,yes,
@@ -253,8 +253,8 @@ case_number,region,start_date,center_lon,center_lat,center_x,center_y,month,sea_
 126,greenland_sea,2009-03-14,12.04257514,77.53295999,1137500,-737500,3,0.417,0.3970000148,258,terra,no,yes,no,0.7,scattered,no,minki,ellen,,,,
 127,hudson_bay,2019-03-27,-94.3276482,60.3754332,-2487500,-2137500,3,1,0.8709999919,-1,aqua,yes,yes,no,1,thin,yes,daniel,,,,,
 127,hudson_bay,2019-03-27,-94.3276482,60.3754332,-2487500,-2137500,3,1,0.8709999919,-1,terra,yes,yes,no,1,thin,no,daniel,,,,,
-128,hudson_bay,2019-04-15,-91.98470311,57.85300979,-2612500,-2437500,4,1,0.9319999814,-1,aqua,yes,yes,yes,0,none,no,daniel,,,,,
-128,hudson_bay,2019-04-15,-91.98470311,57.85300979,-2612500,-2437500,4,1,0.9319999814,-1,terra,yes,yes,yes,0,none,yes,daniel,,,,,
+128,hudson_bay,2019-04-15,-91.98470311,57.85300979,-2612500,-2437500,4,1,0.9319999814,-1,aqua,yes,yes,yes,0,none,no,daniel,,daniel,,yes,
+128,hudson_bay,2019-04-15,-91.98470311,57.85300979,-2612500,-2437500,4,1,0.9319999814,-1,terra,yes,yes,yes,0,none,yes,daniel,,daniel,,yes,
 129,hudson_bay,2010-03-24,-91.96526057,57.55116863,-2637500,-2462500,3,1,0.94599998,-1,aqua,yes,yes,yes,1,thin,no,daniel,,,,,
 129,hudson_bay,2010-03-24,-91.96526057,57.55116863,-2637500,-2462500,3,1,0.94599998,-1,terra,yes,yes,yes,1,thin,yes,daniel,,,,,
 130,hudson_bay,2007-04-28,-91.72698775,58.31153968,-2562500,-2412500,4,1,0.8199999928,311,aqua,yes,no,yes,1,thin,no,emma,daniel,,,,changed clouds to thin
