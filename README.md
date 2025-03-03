@@ -32,9 +32,7 @@ Satellite imagery is stored in `data/modis`. This imagery is downloaded using th
 - Cloud Fraction
 - Land masks
 
-Sea ice extent at 4 km resolution from the MASIE-NH data product is stored in `data/masie`. 
-TBD: Copy over the images that were downloaded already, make wget to get more images.
-
+Sea ice extent at 4 km resolution from the MASIE-NH data product is stored in `data/masie`. The data is interpolated to the same resolution and projection as the MODIS imagery. Both ice extent and land masks are available. 
 
 Results from the IFT-pipeline runs are placed in the `data/ift_lopez-acosta` and `data/ift_buckley`. The `ift_lopez-acosta` runs use the Julia implementation of the algorithm used in Lopez-Acosta et al. (2019), and the `ift_buckley` runs use the Python segmentation routine developed for Buckley et al. (2024). In each case, we save GeoTiff files of labeled floes for all images where the segmentation algorithm produced at least one potential sea ice object. 
 
@@ -51,6 +49,8 @@ Key properties that we need to account for, in no particular order
 - Is there a limit on shapes and sizes of floes for them to be trackable?
 
 ## Validation data
+TBD: update this, add images
+
 The validation data consists of a set of 100 km by 100 km images, randomly sampled across spring and summer months, within 9 regions of the Arctic Ocean and its marginal seas. The folder `data/validation_tables` contains two folders. In the folder `data/validation_tables/quantitative_assessment_tables/`, there are CSV files for each region as well as a file `all_100km_cases.csv` that is a simple concatenation of the other files. The CSV files include case metadata, including a case number, the file name (`long_name`), the region name, start and end dates, satellite name, and image size. The quantitative assessment results are "yes/no" data for `visible_sea_ice`, `visible_landfast_ice`, `visible_floes`, and  `artifacts` (errors in the image, missing data, or obvious overlap of different images), manual assessment of cloud fraction (0 to 1, to the nearest 0.1), and cloud category (none, thin, scattered, opaque). These values were first estimated by `qa_analyst`, then checked by `qa_reviewer`. Adjustments to the values in the first assessment are noted in `notes`. The columns `fl_analyst` and `fl_reviewer` indicate the analysts who manually labeled the images and who reviewed and/or corrected the manual labeling. 
 
 The floe labeling task was carried out by first selecting all the images where the quantitative assessment indicated visible ice floes, then randomly dividing the images between the 5 analysts. The images in Baffin Bay were each labeled twice to provide a measure of the subjectivity in floe labeling. Floe labeling assignments
