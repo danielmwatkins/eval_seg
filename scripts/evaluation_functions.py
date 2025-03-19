@@ -146,8 +146,9 @@ def apply_segmentation_metrics_ij(label_i, gt_image, label_j, seg_image,
     
 
     # area
-    metric_results['relative_error_area'] = (area_g - area_s)/area_g
+    metric_results['area_relative_error'] = (area_g - area_s)/area_g
     metric_results['area_similarity_ratio'] = min(area_s, area_g)/max(area_s, area_g)
+    metric_results['normalized_area_diff_ratio'] = np.abs(area_s - area_g)/(area_s + area_g)
     metric_results['undersegmentation_error'] = 1 - pr
     metric_results['oversegmentation_error'] = 1 - re
     metric_results['segmentation_error'] = 1 - f1_score
@@ -218,7 +219,7 @@ def compute_metrics(gt_image, seg_image, return_type='weighted'):
     # Weighted by area
     if return_type == 'weighted':
         w = results_i.area_i / results_i.area_i.sum()
-        weighted_mean = pd.Series(np.average(results_i, weights=w, axis=0), index=unweighted_mean.index)
+        weighted_mean = pd.Series(np.average(results_i, weights=w, axis=0), index=results_i.columns)
         weighted_mean['n'] = len(results_i)
     
         return weighted_mean
@@ -226,48 +227,6 @@ def compute_metrics(gt_image, seg_image, return_type='weighted'):
     else:
         return unweighted_mean
 
-
-# Evaluation metrics operating on full image
-# precision
-
-# recall
-
-# f1score
-
-
-
-
-# Evaluation metrics operating on object and relevant set
-###### Area Based Methods ###########
-# Signed Relative Error in Area
-
-# SimSize (Zhan 2005)
-
-# Area Fit Index 
-
-# Shape Dissimilarity
-
-# Quality Rate
-
-# Oversegmentation Error
-
-# Undersegmentation Error 
-
-##### Location Based Metrics ########
-# Mean difference in centroids
-
-# 
-
-
-
-###### Boundary Based Methods ##########
-# TBD: Hausdorff Distance
-# This function operates on two boolean images. Wrap to get data for each element of 
-# relevant set.
-# skimage.metrics.hausdorff_distance(image0, image1, method='standard')
-
-# TBD: Modified Hausdorff Distance
-# skimage.metrics.hausdorff_distance(image0, image1, method='modified')
 
 ####### To-be-sorted #########
 # Matthews Correlation Coefficient
