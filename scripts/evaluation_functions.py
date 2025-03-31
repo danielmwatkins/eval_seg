@@ -1,5 +1,5 @@
 """Functions for evaluating segmentation results"""
-import skimage
+import skimage as sk
 import pandas as pd
 import numpy as np
 
@@ -46,16 +46,16 @@ def select_relevant_set(label_i, gt_image, seg_image, gt_image_props, seg_image_
 
     return reference_set
 
-def bdry_dice_score(label_i, label_j, gt_image, seg_image, radius=1, directed=True):
+def bdry_dir_f_score(label_i, label_j, gt_image, seg_image, radius=1, directed=True):
     """Computes the directed boundary F-score, which is an adaptation of the 
     directed boundary Dice score used in Yeghiazaryan and Voiculescu 2018.
-    TBD: Add variable, directed=True, so if it is false, compute the symmetric version.
+    TBD: Set up method for case where directed = False to compute the symmetric version.
     """
     imsize = gt_image.shape
-    obj_bdry = skimage.segmentation.find_boundaries(gt_image, mode='inner')
+    obj_bdry = sk.segmentation.find_boundaries(gt_image, mode='inner')
     index_bdry = np.argwhere((gt_image == label_i) & obj_bdry)
 
-    k = skimage.morphology.disk(radius)
+    k = sk.morphology.disk(radius)
     kdim = k.shape
     
     gi = gt_image == label_i
@@ -98,13 +98,22 @@ def bdry_dice_score(label_i, label_j, gt_image, seg_image, radius=1, directed=Tr
         y[idx] = denom/num
     return np.mean(y)
 
+def bdry_dil_f_score(label_i, label_j, gt_image, seg_image, radius=1, directed=True):
+    """Computes the F score on the region defined by the dilated boundaries of the two images."""
+    k = sk.morphology.disk(radius)
+    gi = (gt_image == label_i).astype(int)
+    sj = (seg_image == label_j).astype(int)
+    gi_bdry = sk.morphology.dilation(gi, k) - sk.morphology.erosion(gi, k)
+    sj_bdry = sk.morphology.dilation(sj, k) - sk.morphology.erosion(sj, k)
+    return 2 * np.sum((gi_bdry > 0) & (sj_bdry > 0)) / (np.sum(gi_bdry) + np.sum(sj_bdry))
 
 # Metrics for objectwise comparison
 def apply_segmentation_metrics_ij(label_i, gt_image, label_j, seg_image,
                                gt_image_props, seg_image_props):
-    """Produce a pandas Series object with the names of each measure as the index. Calculates measures for
-    indivual pairs of objects. Inputs are the (integer) labels, the labeled images, and the dictionaries 
-    with object properties returned by regionprops. If label_j is nan, then it returns 0 for each metric.
+    """Produce a pandas Series object with the names of each measure as the index.
+    Calculates measures for indivual pairs of objects. Inputs are the (integer) labels,
+    the labeled images, and the dictionaries with object properties returned by regionprops.
+    If label_j is nan, then it returns 0 for each metric.
     
     Metrics calculated:
 
@@ -116,7 +125,8 @@ def apply_segmentation_metrics_ij(label_i, gt_image, label_j, seg_image,
     hausdorff_distance
     modified_hausdorff_distance
     shape_dissimilarity
-    directed_boundary_dice_score
+    directed_boundary_f_score
+    dilated_boundary_f_score
     """
 
     metric_results = {'label_i': label_i,
@@ -155,22 +165,28 @@ def apply_segmentation_metrics_ij(label_i, gt_image, label_j, seg_image,
 
     # location
     metric_results['euclidean_distance'] = np.sqrt((rg - rs)**2 + (cg - cs)**2)
-    metric_results['hausdorff_distance'] = skimage.metrics.hausdorff_distance(gt_image == label_i,
-                                                                              seg_image == label_j,
-                                                                              method='standard')
+    metric_results['hausdorff_distance'] = sk.metrics.hausdorff_distance(
+        gt_image == label_i,
+        seg_image == label_j,
+        method='standard')
     
-    metric_results['modified_hausdorff_distance'] = skimage.metrics.hausdorff_distance(gt_image == label_i,
-                                                                                       seg_image == label_j,
-                                                                                       method='modified')
+    metric_results['modified_hausdorff_distance'] = sk.metrics.hausdorff_distance(
+        t_image == label_i,
+        seg_image == label_j,
+        method='modified')
 
     # boundary -- identical to the relative area error?? double check this formula
     metric_results['shape_dissimilarity'] = (np.sum((gt_image == label_i) & (seg_image != label_j)) + 
                                              np.sum((gt_image != label_i) & (seg_image == label_j))) / area_g
 
 
-    metric_results['directed_boundary_dice_score'] = bdry_dice_score(
+    metric_results['directed_boundary_f_score'] = bdry_dir_f_score(
         label_i, label_j, gt_image, seg_image, radius=1, directed=True)
 
+    metric_results['dilated_boundary_f_score'] = bdry_dil_f_score(
+        label_i, label_j, gt_image, seg_image, radius=1)
+
+    
     # add symmetric score
     # add f-score
     
@@ -184,8 +200,8 @@ def compute_metrics(gt_image, seg_image, return_type='weighted'):
     """
 
 
-    gt_img_props = {floe.label: floe for floe in skimage.measure.regionprops(gt_image)}
-    seg_img_props = {floe.label: floe for floe in skimage.measure.regionprops(seg_image)}
+    gt_img_props = {floe.label: floe for floe in sk.measure.regionprops(gt_image)}
+    seg_img_props = {floe.label: floe for floe in sk.measure.regionprops(seg_image)}
     
     results = []
     for label_i in gt_img_props:
