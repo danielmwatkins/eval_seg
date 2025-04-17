@@ -107,9 +107,9 @@ def load_case(case, modis_loc="../data/modis/truecolor/", labeled_loc="../data/v
 
     ####### Find regions of overlap ########
     regions_aqua = pd.DataFrame(sk.measure.regionprops_table(
-        lb_aqua, properties=['label', 'area', 'centroid', 'perimeter', 'axis_major_length', 'axis_minor_length'])).set_index('label')
+        lb_aqua, properties=['label', 'area', 'convex_area', 'centroid', 'perimeter', 'axis_major_length', 'axis_minor_length'])).set_index('label')
     regions_terra = pd.DataFrame(sk.measure.regionprops_table(
-        lb_terra, properties=['label', 'area', 'centroid', 'perimeter', 'axis_major_length', 'axis_minor_length'])).set_index('label')
+        lb_terra, properties=['label', 'area', 'convex_area', 'centroid', 'perimeter', 'axis_major_length', 'axis_minor_length'])).set_index('label')
 
     # Labels where there is some overlap
     aqua_labels = np.ravel(lb_aqua)
@@ -131,6 +131,7 @@ def load_case(case, modis_loc="../data/modis/truecolor/", labeled_loc="../data/v
             
     matches = pd.DataFrame(matches, columns=['aqua_label', 'terra_label', 'aqua_area',
                                              'terra_area', 'joint_area', 'iou'])
+    
     if len(matches) > 0:
         for row, data in matches.iterrows():
             r_aqua, c_aqua = regions_aqua.loc[data.aqua_label.astype(int), ['centroid-0', 'centroid-1']]
@@ -159,9 +160,16 @@ terra_dict = {}
 for case_idx in range(len(cases)):
     regions_aqua, regions_terra, matches, lb_aqua, lb_terra, tc_aqua, tc_terra = load_case(cases[case_idx])
     case_number = cases[case_idx].split('-')[0]
+    matches['case_number'] = case_number
+    regions_aqua['case_number'] = case_number
+    regions_terra['case_number'] = case_number
+    
     matches_dict[case_number] = matches
     aqua_dict[case_number] = regions_aqua
     terra_dict[case_number] = regions_terra
+
+
+    
     regions_aqua.to_csv('../data/floe_property_tables/aqua/' + cases[case_idx].replace('labeled_floes.tiff', 'floe_properties.csv'))
     regions_terra.to_csv('../data/floe_property_tables/terra/' + cases[case_idx].replace(
         'labeled_floes.tiff', 'floe_properties.csv').replace('aqua', 'terra'))
@@ -194,7 +202,6 @@ filter_dict = {
     '023': ['all', []],
     '029': ['all', []],   # Some to add with larger drift
     '033': ['all', []],
-    '036': ['none', []],
     '043': ['all', []],
     '044': ['all', []],
     '046': ['all', []],
@@ -207,7 +214,6 @@ filter_dict = {
     '065': ['none', []], # looks like large drift between images
     '067': ['none', []], # large drift -- potential for linking manually
     '068': ['none', []], # large drift -- potential for manual links
-    '069': ['none', []],
     '071': ['none', []], # large drift -- potential for manual links
     '075': ['all', []],
     '081': ['some', [8]],
@@ -256,6 +262,7 @@ def adjust_matches(matches_dict, filter_dict, add_dict = {}):
     filter_dict: of the flagged matches, which should be kept?
     add_dict: of the unflagged floes, which pairs should be added?
     Returns updated matches dataframe.
+    TBD: add column for match type. high_iou, low_iou, added
     TBD: removed -- any auto matches that shouldn't be there?
     """
     updated_matches = {}
@@ -264,9 +271,6 @@ def adjust_matches(matches_dict, filter_dict, add_dict = {}):
         if case in filter_dict:
             if filter_dict[case][0] == 'all':
                 updated_matches[case] = matches_dict[case].copy()
-                updated_matches[case]['method'] = 'keep_all_overlap'
-            elif filter_dict[case][0] == 'all_iou':
-                updated_matches[case] = matches_dict[case].loc[init_idx, :].copy()
                 updated_matches[case]['method'] = 'high_iou'
             elif filter_dict[case][0] == 'some':
                 manu_idx = [x for x in matches_dict[case].index if matches_dict[case].loc[x, 'aqua_label'] in filter_dict[case][1]]
@@ -278,20 +282,26 @@ def adjust_matches(matches_dict, filter_dict, add_dict = {}):
             else:
                 print(case)
                 updated_matches[case] = pd.DataFrame(data=np.nan, columns=matches_dict[case].columns, index=[0])
-    
+        
     return updated_matches
 
 updated_matches = adjust_matches(matches_dict, filter_dict)
-for case in cases:
-    case_number = case.split('-')[0]
-    if case_number in updated_matches:
-        updated_matches[case_number].to_csv('../data/floe_property_tables/matched/' + cases[case_idx].replace(
-        'labeled_floes.tiff', 'floe_properties.csv').replace('aqua', 'matched'))
+for case_number in updated_matches:
+    for case in cases:
+        if case_number == case.split('-')[0]:
+            fname = case.replace('labeled_floes.tiff', 'floe_properties.csv').replace('aqua', 'matched')
+            updated_matches[case_number].to_csv('../data/floe_property_tables/matched/' + fname)
+        # else:
+        #     fname = case_number + '-matched-floe_properties.csv'
+            
+    
+    
 
 
                                             
 ##### Overlay floes and matches ######
 # TBD: add step to load landfast and landmask images
+# TBD: add check that matches df exists, only plot if it does
 def plot_match_images(regions_aqua, regions_terra, updated_matches, lb_aqua, lb_terra, tc_aqua, tc_terra, case_number):
     """
     Overlay images with candidate matches
