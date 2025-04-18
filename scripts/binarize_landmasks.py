@@ -14,7 +14,7 @@ files = [f for f in files if 'tiff' in f]
 
 for file in files:
     info, satellite, imtype, dx, ftype = file.split('.')
-    info = info.replace('100km', '') # image dims not needed 
+    info = info.replace('-100km', '') # image dims not needed 
     
     new_fname = '-'.join([info, satellite, 'binary_landmask']) + '.png'
 
