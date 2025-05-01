@@ -93,13 +93,9 @@ def load_case(case, modis_loc="../data/modis/truecolor/", labeled_loc="../data/v
     if len(lf_terra.shape) != 2:
         lf_terra = lf_terra[:,:,0]
 
-    # Folder naming is different for the landmasks
-    lm_aqua = sk.io.imread(fpath_lb_aqua.replace(
-                                'labeled_floes/', 'binary_landmask/').replace(
-                                        'labeled_floes.tiff', 'landmask.png')).astype(int)    
-    lm_terra = sk.io.imread(fpath_lb_terra.replace(
-                                'labeled_floes/', 'binary_landmask/').replace(
-                                        'labeled_floes.tiff', 'landmask.png')).astype(int)
+    lm_aqua = sk.io.imread(fpath_lb_aqua.replace('labeled_floes', 'binary_landfast').replace('tiff', 'png')).astype(int)
+    lm_terra = sk.io.imread(fpath_lb_terra.replace('labeled_floes', 'binary_landfast').replace('tiff', 'png')).astype(int)
+    
     if len(lm_aqua.shape) != 2:
         lm_aqua = lm_aqua[:,:,0]
     if len(lm_terra.shape) != 2:
